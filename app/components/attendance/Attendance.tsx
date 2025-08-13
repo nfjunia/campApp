@@ -1,4 +1,4 @@
-import { ServiceCard } from "@/components/ServiceCard";
+import ServiceCard from "@/components/ServiceCard";
 import { User, Calendar, CheckSquare, Heart } from "lucide-react";
 
 const Attendance = () => {
