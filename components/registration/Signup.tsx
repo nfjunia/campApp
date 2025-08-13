@@ -291,7 +291,7 @@ const Signup = () => {
         theme === "dark" ? "bg-black" : "bg-white"
       }  h-screen w-full overflow-hidden`}
     >
-      <div
+      {/**  <div
         className={`w-full fixed ${
           theme === "dark" ? "bg-black" : "bg-white"
         } top-0 z-10 right-0 left-0 px-4 flex items-center h-[80px]`}
@@ -308,8 +308,7 @@ const Signup = () => {
         >
           <ChevronLeft /> Back
         </button>
-      </div>
-
+      </div>{" "} */}
       <div className="h-full w-full flex">
         <div className=" mx-auto w-full flex gap-4 pb-20 pt-14 scrollbar-hide scroll-smooth overflow-y-auto justify-between h-full my-auto rounded-md">
           <Form {...form}>

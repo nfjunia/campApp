@@ -14,9 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { CheckCircle, XCircle } from "lucide-react";
-import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
+import { CheckCircle, XCircle, ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -40,6 +38,7 @@ type User = {
     [day: string]: AttendanceRecord;
   };
 };
+
 const allUsersData: User[] = [
   {
     id: "user-1",
@@ -97,18 +96,15 @@ export default function ServiceDayPage({
 }: {
   params: Promise<{ day: string }>;
 }) {
-  const { day } = React.use(params);
+  const { day } = React.use(params); // unwrap params once here
 
   const displayDay =
     dayDisplayNames[day] ||
     day.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
 
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [currentUserAttendance, setCurrentUserAttendance] = useState<{
-    morning: boolean;
-    afternoon: boolean;
-    evening: boolean;
-  } | null>(null);
+  const [currentUserAttendance, setCurrentUserAttendance] =
+    useState<AttendanceRecord | null>(null);
 
   useEffect(() => {
     if (allUsersData.length > 0 && !selectedUserId) {
@@ -121,7 +117,7 @@ export default function ServiceDayPage({
       const user = allUsersData.find((u) => u.id === selectedUserId);
       if (user) {
         setCurrentUserAttendance(
-          (user.attendance[params.day] as any) || {
+          user.attendance[day] || {
             morning: false,
             afternoon: false,
             evening: false,
@@ -129,12 +125,11 @@ export default function ServiceDayPage({
         );
       }
     }
-  }, [selectedUserId, params.day]);
+  }, [selectedUserId, day]);
 
   return (
     <div className="flex flex-col items-center min-h-screen p-4">
       <Backbutton title="Attendance" />
-      {/* Add a div for the user selection dropdown */}
       <div className="w-full pt-28 mb-4">
         <Select onValueChange={setSelectedUserId} value={selectedUserId || ""}>
           <SelectTrigger className="w-full">
@@ -155,78 +150,38 @@ export default function ServiceDayPage({
             {displayDay} Service Details
           </CardTitle>
           <CardDescription className="text-center">
-            View your attendance for morning and evening services.
+            View your attendance for morning, afternoon, and evening services.
           </CardDescription>
         </CardHeader>
         <CardContent>
           {currentUserAttendance && (
             <Accordion type="single" collapsible className="w-full">
-              <AccordionItem value="morning-service">
-                <AccordionTrigger className="text-lg font-semibold">
-                  Morning Service
-                </AccordionTrigger>
-                <AccordionContent>
-                  <div className="flex items-center gap-2 py-2">
-                    {currentUserAttendance.morning ? (
-                      <>
-                        <CheckCircle className="h-5 w-5 text-green-500" />
-                        <span className="text-green-600 font-medium">
-                          Present
-                        </span>
-                      </>
-                    ) : (
-                      <>
-                        <XCircle className="h-5 w-5 text-red-500" />
-                        <span className="text-red-600 font-medium">Absent</span>
-                      </>
-                    )}
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="afternoon-service">
-                <AccordionTrigger className="text-lg font-semibold">
-                  Afternoon Service
-                </AccordionTrigger>
-                <AccordionContent>
-                  <div className="flex items-center gap-2 py-2">
-                    {currentUserAttendance.afternoon ? (
-                      <>
-                        <CheckCircle className="h-5 w-5 text-green-500" />
-                        <span className="text-green-600 font-medium">
-                          Present
-                        </span>
-                      </>
-                    ) : (
-                      <>
-                        <XCircle className="h-5 w-5 text-red-500" />
-                        <span className="text-red-600 font-medium">Absent</span>
-                      </>
-                    )}
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="evening-service">
-                <AccordionTrigger className="text-lg font-semibold">
-                  Evening Service
-                </AccordionTrigger>
-                <AccordionContent>
-                  <div className="flex items-center gap-2 py-2">
-                    {currentUserAttendance.evening ? (
-                      <>
-                        <CheckCircle className="h-5 w-5 text-green-500" />
-                        <span className="text-green-600 font-medium">
-                          Present
-                        </span>
-                      </>
-                    ) : (
-                      <>
-                        <XCircle className="h-5 w-5 text-red-500" />
-                        <span className="text-red-600 font-medium">Absent</span>
-                      </>
-                    )}
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
+              {["morning", "afternoon", "evening"].map((time) => (
+                <AccordionItem key={time} value={`${time}-service`}>
+                  <AccordionTrigger className="text-lg font-semibold">
+                    {time.charAt(0).toUpperCase() + time.slice(1)} Service
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="flex items-center gap-2 py-2">
+                      {currentUserAttendance[time as keyof AttendanceRecord] ? (
+                        <>
+                          <CheckCircle className="h-5 w-5 text-green-500" />
+                          <span className="text-green-600 font-medium">
+                            Present
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <XCircle className="h-5 w-5 text-red-500" />
+                          <span className="text-red-600 font-medium">
+                            Absent
+                          </span>
+                        </>
+                      )}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
             </Accordion>
           )}
         </CardContent>
