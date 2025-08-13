@@ -1,0 +1,34 @@
+# dependencies
+/node_modules
+
+# build
+/.next
+/out
+/build
+
+# debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+bun-debug.log*
+
+# local env files
+.env
+.env*.local
+
+# vercel
+.vercel
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# editor settings
+.vscode
+.idea
+
+# optional: ignore lockfiles if not needed
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
