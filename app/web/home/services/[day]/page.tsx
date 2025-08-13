@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Accordion,
   AccordionContent,
@@ -95,13 +95,13 @@ const dayDisplayNames: Record<string, string> = {
 export default function ServiceDayPage({
   params,
 }: {
-  params: { day: string };
+  params: Promise<{ day: string }>;
 }) {
+  const { day } = React.use(params);
+
   const displayDay =
-    dayDisplayNames[params.day] ||
-    params.day
-      .replace(/-/g, " ")
-      .replace(/\b\w/g, (char) => char.toUpperCase());
+    dayDisplayNames[day] ||
+    day.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
 
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [currentUserAttendance, setCurrentUserAttendance] = useState<{
